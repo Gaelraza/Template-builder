@@ -1,8 +1,23 @@
 // Editor Module - Handles category management and form interactions
 
 const Editor = {
-    incomeCategories: ['Salary', 'Freelance', 'Investments', 'Other Income'],
-    expenseCategories: ['Housing', 'Food & Dining', 'Transportation', 'Utilities', 'Entertainment', 'Shopping', 'Healthcare', 'Savings', 'Other Expenses'],
+    incomeCategories: [
+        { name: 'Salary', value: 0 },
+        { name: 'Freelance', value: 0 },
+        { name: 'Investments', value: 0 },
+        { name: 'Other Income', value: 0 }
+    ],
+    expenseCategories: [
+        { name: 'Housing', value: 0 },
+        { name: 'Food & Dining', value: 0 },
+        { name: 'Transportation', value: 0 },
+        { name: 'Utilities', value: 0 },
+        { name: 'Entertainment', value: 0 },
+        { name: 'Shopping', value: 0 },
+        { name: 'Healthcare', value: 0 },
+        { name: 'Savings', value: 0 },
+        { name: 'Other Expenses', value: 0 }
+    ],
 
     init() {
         this.renderCategories('income');
@@ -18,11 +33,19 @@ const Editor = {
         container.innerHTML = categories.map((cat, index) => `
             <div class="flex gap-2 items-center category-item" data-type="${type}" data-index="${index}">
                 <input type="text"
-                       class="input input-bordered input-sm flex-1 category-input"
-                       value="${cat}"
+                       class="input input-bordered input-sm flex-1 category-name-input"
+                       value="${cat.name}"
                        data-type="${type}"
                        data-index="${index}"
-                       onchange="Editor.updateCategory('${type}', ${index}, this.value)" />
+                       onchange="Editor.updateCategoryName('${type}', ${index}, this.value)" 
+                       placeholder="Category name" />
+                <input type="number"
+                       class="input input-bordered input-sm w-24 category-value-input"
+                       value="${cat.value}"
+                       data-type="${type}"
+                       data-index="${index}"
+                       onchange="Editor.updateCategoryValue('${type}', ${index}, this.value)" 
+                       placeholder="Amount" />
                 <button class="btn btn-sm btn-ghost btn-circle text-error"
                         onclick="Editor.removeCategory('${type}', ${index})">
                     ✕
@@ -33,7 +56,10 @@ const Editor = {
 
     addCategory(type) {
         console.log('Editor.addCategory called with:', type);
-        const newCat = type === 'income' ? 'New Income' : 'New Expense';
+        const newCat = { 
+            name: type === 'income' ? 'New Income' : 'New Expense', 
+            value: 0 
+        };
 
         if (type === 'income') {
             this.incomeCategories.push(newCat);
@@ -65,11 +91,26 @@ const Editor = {
         }
     },
 
-    updateCategory(type, index, value) {
+    updateCategoryName(type, index, value) {
         if (type === 'income') {
-            this.incomeCategories[index] = value;
+            this.incomeCategories[index].name = value;
         } else {
-            this.expenseCategories[index] = value;
+            this.expenseCategories[index].name = value;
+        }
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
+    },
+
+    updateCategoryValue(type, index, value) {
+        const numValue = parseFloat(value) || 0;
+        if (type === 'income') {
+            this.incomeCategories[index].value = numValue;
+        } else {
+            this.expenseCategories[index].value = numValue;
+        }
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
         }
     },
 
@@ -81,6 +122,8 @@ const Editor = {
             startMonth: parseInt(document.getElementById('startMonth').value) || 0,
             headerColor: document.getElementById('headerColor').value || '#3b82f6',
             accentColor: document.getElementById('accentColor').value || '#10b981',
+            primaryColor: document.getElementById('headerColor').value || '#3b82f6',
+            secondaryColor: '#ef4444',
             fontFamily: document.getElementById('fontFamily').value || 'Arial, sans-serif',
             showGrid: document.getElementById('showGrid').checked !== false,
             conditionalFormatting: document.getElementById('conditionalFormatting').checked !== false,
@@ -94,4 +137,7 @@ const Editor = {
 // Initialize editor on load
 document.addEventListener('DOMContentLoaded', () => {
     Editor.init();
+    if (typeof window.updatePreview === 'function') {
+        window.updatePreview();
+    }
 });
