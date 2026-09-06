@@ -11,17 +11,19 @@ const Editor = {
 
     renderCategories(type) {
         const container = document.getElementById(`${type}Categories`);
-        const categories = type === 'income' ? this.incomeCategories : this.expenseCategories;
+        if (!container) return;
         
+        const categories = type === 'income' ? this.incomeCategories : this.expenseCategories;
+
         container.innerHTML = categories.map((cat, index) => `
             <div class="flex gap-2 items-center category-item" data-type="${type}" data-index="${index}">
-                <input type="text" 
-                       class="input input-bordered input-sm flex-1 category-input" 
-                       value="${cat}" 
-                       data-type="${type}" 
+                <input type="text"
+                       class="input input-bordered input-sm flex-1 category-input"
+                       value="${cat}"
+                       data-type="${type}"
                        data-index="${index}"
                        onchange="Editor.updateCategory('${type}', ${index}, this.value)" />
-                <button class="btn btn-sm btn-ghost btn-circle text-error" 
+                <button class="btn btn-sm btn-ghost btn-circle text-error"
                         onclick="Editor.removeCategory('${type}', ${index})">
                     ✕
                 </button>
@@ -30,29 +32,37 @@ const Editor = {
     },
 
     addCategory(type) {
-        const container = document.getElementById(`${type}Categories`);
-        const newIndex = type === 'income' ? this.incomeCategories.length : this.expenseCategories.length;
+        console.log('Editor.addCategory called with:', type);
         const newCat = type === 'income' ? 'New Income' : 'New Expense';
-        
+
         if (type === 'income') {
             this.incomeCategories.push(newCat);
         } else {
             this.expenseCategories.push(newCat);
         }
-        
+
         this.renderCategories(type);
-        updatePreview();
+        
+        // Trigger preview update
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
     },
 
     removeCategory(type, index) {
+        console.log('Editor.removeCategory called with:', type, index);
         if (type === 'income') {
             this.incomeCategories.splice(index, 1);
         } else {
             this.expenseCategories.splice(index, 1);
         }
-        
+
         this.renderCategories(type);
-        updatePreview();
+        
+        // Trigger preview update
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
     },
 
     updateCategory(type, index, value) {
@@ -65,41 +75,23 @@ const Editor = {
 
     getSettings() {
         return {
-            templateName: document.getElementById('templateName').value,
-            currencySymbol: document.getElementById('currencySymbol').value,
-            budgetPeriod: document.getElementById('budgetPeriod').value,
-            startMonth: parseInt(document.getElementById('startMonth').value),
-            headerColor: document.getElementById('headerColor').value,
-            accentColor: document.getElementById('accentColor').value,
-            fontFamily: document.getElementById('fontFamily').value,
-            showGrid: document.getElementById('showGrid').checked,
-            conditionalFormatting: document.getElementById('conditionalFormatting').checked,
-            autoSum: document.getElementById('autoSum').checked,
+            templateName: document.getElementById('templateName').value || 'Budget Tracker',
+            currencySymbol: document.getElementById('currencySymbol').value || '$',
+            budgetPeriod: document.getElementById('budgetPeriod').value || 'monthly',
+            startMonth: parseInt(document.getElementById('startMonth').value) || 0,
+            headerColor: document.getElementById('headerColor').value || '#3b82f6',
+            accentColor: document.getElementById('accentColor').value || '#10b981',
+            fontFamily: document.getElementById('fontFamily').value || 'Arial, sans-serif',
+            showGrid: document.getElementById('showGrid').checked !== false,
+            conditionalFormatting: document.getElementById('conditionalFormatting').checked !== false,
+            autoSum: document.getElementById('autoSum').checked !== false,
             incomeCategories: [...this.incomeCategories],
             expenseCategories: [...this.expenseCategories]
         };
     }
 };
 
-// Global wrapper functions for HTML onclick handlers
-function addCategory(type) {
-    Editor.addCategory(type);
-}
-
-function updatePreview() {
-    Preview.render(Editor.getSettings());
-}
-
-function exportToExcel() {
-    ExcelExport.export(Editor.getSettings());
-}
-
-function exportToGoogleSheets() {
-    SheetsExport.export(Editor.getSettings());
-}
-
 // Initialize editor on load
 document.addEventListener('DOMContentLoaded', () => {
     Editor.init();
-    Preview.render(Editor.getSettings());
 });
