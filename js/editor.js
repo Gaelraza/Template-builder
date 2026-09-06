@@ -81,7 +81,25 @@ const Editor = {
     }
 };
 
+// Global wrapper functions for HTML onclick handlers
+function addCategory(type) {
+    Editor.addCategory(type);
+}
+
+function updatePreview() {
+    Preview.render(Editor.getSettings());
+}
+
+function exportToExcel() {
+    ExcelExport.export(Editor.getSettings());
+}
+
+function exportToGoogleSheets() {
+    SheetsExport.export(Editor.getSettings());
+}
+
 // Initialize editor on load
 document.addEventListener('DOMContentLoaded', () => {
     Editor.init();
+    Preview.render(Editor.getSettings());
 });
