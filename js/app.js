@@ -1,71 +1,28 @@
-// Main App Module - Initializes and coordinates all modules
+// Main App Initialization
 
-// Define global functions IMMEDIATELY when this script loads (before DOMContentLoaded)
+// Expose functions to global scope for HTML onclick handlers
 window.addCategory = function(type) {
-    console.log('addCategory called with:', type);
-    if (typeof Editor !== 'undefined') {
-        Editor.addCategory(type);
-    } else {
-        console.error('Editor module not loaded yet');
-    }
+    Editor.addCategory(type);
 };
 
 window.updatePreview = function() {
-    if (typeof Preview !== 'undefined' && typeof Editor !== 'undefined') {
-        Preview.render(Editor.getSettings());
-    }
+    const settings = Editor.getSettings();
+    Preview.render(settings);
 };
 
 window.exportToExcel = function() {
-    if (typeof ExcelExport !== 'undefined' && typeof Editor !== 'undefined') {
-        ExcelExport.export(Editor.getSettings());
-    }
+    const settings = Editor.getSettings();
+    ExcelExport.export(settings);
 };
 
 window.exportToGoogleSheets = function() {
-    if (typeof SheetsExport !== 'undefined' && typeof Editor !== 'undefined') {
-        SheetsExport.export(Editor.getSettings());
-    }
+    const settings = Editor.getSettings();
+    SheetsExport.export(settings);
 };
 
-const App = {
-    init() {
-        console.log('🚀 Budget Template Builder initialized');
-
-        // Add event listeners for real-time updates
-        this.addRealTimeListeners();
-
-        // Initial preview render
-        setTimeout(() => {
-            window.updatePreview();
-        }, 100);
-    },
-
-    addRealTimeListeners() {
-        // Listen for changes on all inputs to auto-update preview
-        document.addEventListener('input', (e) => {
-            if (e.target.matches('input, select')) {
-                this.debounceUpdatePreview();
-            }
-        });
-
-        document.addEventListener('change', (e) => {
-            if (e.target.matches('input[type="checkbox"], input[type="color"]')) {
-                this.debounceUpdatePreview();
-            }
-        });
-    },
-
-    debounceTimeout: null,
-    debounceUpdatePreview(delay = 300) {
-        clearTimeout(this.debounceTimeout);
-        this.debounceTimeout = setTimeout(() => {
-            window.updatePreview();
-        }, delay);
-    }
-};
-
-// Initialize app when DOM is ready
+// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
-    App.init();
+    // Editor is initialized in its own module
+    // Initial preview render is triggered by editor.js
+    console.log('Budget Template Builder initialized');
 });
