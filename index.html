@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Template Builder</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-base-200 min-h-screen">
+    <!-- Header -->
+    <header class="navbar bg-primary text-primary-content shadow-lg">
+        <div class="flex-1">
+            <h1 class="text-2xl font-bold">📊 Budget Template Builder</h1>
+        </div>
+        <div class="flex-none gap-2">
+            <span class="badge badge-secondary">MVP v1.0</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Editor Panel -->
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">⚙️ Template Editor</h2>
+                    
+                    <!-- Basic Settings -->
+                    <div class="collapse collapse-arrow bg-base-200 mb-2">
+                        <input type="checkbox" checked />
+                        <div class="collapse-title text-lg font-medium">Basic Settings</div>
+                        <div class="collapse-content space-y-3">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Template Name</span>
+                                </label>
+                                <input type="text" id="templateName" class="input input-bordered" value="Monthly Budget Tracker" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Currency Symbol</span>
+                                </label>
+                                <input type="text" id="currencySymbol" class="input input-bordered" value="$" maxlength="3" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Budget Period</span>
+                                </label>
+                                <select id="budgetPeriod" class="select select-bordered">
+                                    <option value="monthly">Monthly</option>
+                                    <option value="weekly">Weekly</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Start Month</span>
+                                </label>
+                                <select id="startMonth" class="select select-bordered">
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Categories -->
+                    <div class="collapse collapse-arrow bg-base-200 mb-2">
+                        <input type="checkbox" checked />
+                        <div class="collapse-title text-lg font-medium">Income Categories</div>
+                        <div class="collapse-content">
+                            <div id="incomeCategories" class="space-y-2"></div>
+                            <button class="btn btn-sm btn-outline mt-2" onclick="addCategory('income')">+ Add Category</button>
+                        </div>
+                    </div>
+
+                    <div class="collapse collapse-arrow bg-base-200 mb-2">
+                        <input type="checkbox" checked />
+                        <div class="collapse-title text-lg font-medium">Expense Categories</div>
+                        <div class="collapse-content">
+                            <div id="expenseCategories" class="space-y-2"></div>
+                            <button class="btn btn-sm btn-outline mt-2" onclick="addCategory('expense')">+ Add Category</button>
+                        </div>
+                    </div>
+
+                    <!-- Styling Options -->
+                    <div class="collapse collapse-arrow bg-base-200 mb-2">
+                        <input type="checkbox" checked />
+                        <div class="collapse-title text-lg font-medium">🎨 Styling & UI</div>
+                        <div class="collapse-content space-y-3">
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Header Color</span>
+                                </label>
+                                <input type="color" id="headerColor" class="w-full h-10" value="#4F46E5" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Accent Color</span>
+                                </label>
+                                <input type="color" id="accentColor" class="w-full h-10" value="#10B981" />
+                            </div>
+                            <div class="form-control">
+                                <label class="label">
+                                    <span class="label-text">Font Family</span>
+                                </label>
+                                <select id="fontFamily" class="select select-bordered">
+                                    <option value="Arial">Arial</option>
+                                    <option value="Calibri">Calibri</option>
+                                    <option value="Times New Roman">Times New Roman</option>
+                                    <option value="Georgia">Georgia</option>
+                                    <option value="Verdana">Verdana</option>
+                                </select>
+                            </div>
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-4">
+                                    <span class="label-text">Show Grid Lines</span>
+                                    <input type="checkbox" id="showGrid" class="toggle toggle-primary" checked />
+                                </label>
+                            </div>
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-4">
+                                    <span class="label-text">Enable Conditional Formatting</span>
+                                    <input type="checkbox" id="conditionalFormatting" class="toggle toggle-primary" checked />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="collapse collapse-arrow bg-base-200 mb-2">
+                        <input type="checkbox" />
+                        <div class="collapse-title text-lg font-medium">📈 Features</div>
+                        <div class="collapse-content space-y-3">
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-4">
+                                    <span class="label-text">Auto-Sum Formulas</span>
+                                    <input type="checkbox" id="autoSum" class="toggle toggle-primary" checked disabled />
+                                </label>
+                            </div>
+                            <div class="form-control">
+                                <label class="label cursor-pointer justify-start gap-4">
+                                    <span class="label-text">Include Charts (Coming Soon)</span>
+                                    <input type="checkbox" class="toggle toggle-disabled" disabled />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card-actions justify-end mt-4">
+                        <button class="btn btn-primary" onclick="updatePreview()">🔄 Update Preview</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Preview Panel -->
+            <section class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">👁️ Live Preview</h2>
+                    <div class="overflow-x-auto">
+                        <div id="previewContainer" class="border border-gray-300 rounded-lg p-2 bg-white min-h-[400px]">
+                            <!-- Dynamic preview will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Export Buttons -->
+                    <div class="card-actions justify-center mt-4 gap-4">
+                        <button class="btn btn-success" onclick="exportToExcel()">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 9V7a4 4 0 10-8 0v2H3l4 4 4-4H9zm-2 2v2a1 1 0 11-2 0v-2H7l2 2 2-2h-2z"/>
+                            </svg>
+                            Export to Excel
+                        </button>
+                        <button class="btn btn-info text-white" onclick="exportToGoogleSheets()">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M14 2H6a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2zM6 16V4h8v12H6z"/>
+                            </svg>
+                            Google Sheets
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer footer-center p-4 bg-base-300 text-base-content mt-8">
+        <div>
+            <p>Budget Template Builder - Personal Use</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/editor.js"></script>
+    <script src="js/preview.js"></script>
+    <script src="js/export-excel.js"></script>
+    <script src="js/export-sheets.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
