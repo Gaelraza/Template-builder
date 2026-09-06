@@ -1,0 +1,89 @@
+/* Custom Styles for Budget Template Builder */
+
+:root {
+    --header-color: #4F46E5;
+    --accent-color: #10B981;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Preview Table Styles */
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.preview-table th {
+    padding: 12px 8px;
+    text-align: left;
+    font-weight: 600;
+    color: white;
+}
+
+.preview-table td {
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.preview-table tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.preview-table tr:hover {
+    background-color: #f3f4f6;
+}
+
+/* Input cells in preview */
+.input-cell {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    padding: 4px 8px;
+    min-width: 80px;
+    display: inline-block;
+}
+
+/* Total row styling */
+.total-row {
+    background-color: #eff6ff !important;
+    font-weight: 600;
+}
+
+/* Category header styling */
+.category-header {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .preview-table {
+        font-size: 12px;
+    }
+    
+    .preview-table th,
+    .preview-table td {
+        padding: 6px 4px;
+    }
+}
+
+/* Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Success animation */
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.success-animation {
+    animation: successPulse 0.3s ease-in-out;
+}
