@@ -1,8 +1,6 @@
-// Google Sheets Export Module - Creates high-quality .xlsx files that can be imported to Google Sheets
-// Since CSV cannot preserve formulas and formatting, we now use ExcelJS to create proper Excel files
+// ExcelJS Export Module - Generates professional .xlsx files with full styling and formulas
 
-const SheetsExport = {
-    // Export as .xlsx file (same quality as Excel export) which imports perfectly into Google Sheets
+const ExcelJSExport = {
     async export(settings) {
         // Check if ExcelJS is loaded
         if (typeof ExcelJS === 'undefined') {
@@ -12,12 +10,12 @@ const SheetsExport = {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Budget Tracker');
 
-        // Build the data structure using the same logic as Excel export
+        // Build the data structure
         this.buildWorksheet(worksheet, settings);
 
         // Generate filename
         const monthName = Preview.getMonthName(settings.startMonth);
-        const filename = `${settings.templateName.replace(/\s+/g, '_')}_${monthName}_GoogleSheets.xlsx`;
+        const filename = `${settings.templateName.replace(/\s+/g, '_')}_${monthName}.xlsx`;
 
         // Download file
         await workbook.xlsx.writeBuffer().then(buffer => {
@@ -31,9 +29,6 @@ const SheetsExport = {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         });
-
-        // Show instructions modal
-        this.showInstructions();
 
         return true;
     },
@@ -49,6 +44,9 @@ const SheetsExport = {
             { key: 'actual', width: 15 },
             { key: 'difference', width: 15 }
         ];
+
+        // Set default font for entire sheet
+        worksheet.properties.defaultRowHeight = 20;
 
         // Row 1: Title
         const titleRow = worksheet.getRow(1);
@@ -245,6 +243,7 @@ const SheetsExport = {
         netBalanceRow.getCell(4).value = { formula: `C${totalIncomeRowNum}-C${totalExpensesRowNum}` };
         netBalanceRow.getCell(4).numFmt = currencySymbol + '#,##0.00';
 
+        // Apply conditional color to net balance
         const netBalanceFill = {
             type: 'pattern',
             pattern: 'solid',
@@ -268,9 +267,21 @@ const SheetsExport = {
             };
         }
         netBalanceRow.height = 30;
+
+        // Add conditional formatting rules for negative values
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber > 5 && rowNumber !== totalIncomeRowNum && rowNumber !== totalExpensesRowNum && rowNumber !== currentRow) {
+                const diffCell = row.getCell(4);
+                if (diffCell.value && typeof diffCell.value === 'object' && diffCell.value.formula) {
+                    // This is a formula cell - ExcelJS doesn't support conditional formatting well
+                    // We'll set a default style that can be manually adjusted in Excel
+                    diffCell.font = { size: 11, family: fontFamily.split(',')[0].trim() };
+                }
+            }
+        });
     },
 
-    // Helper function to lighten colors
+    // Helper function to lighten/darken colors
     lightenColor(color, percent) {
         const num = parseInt(color.replace('#', ''), 16);
         const amt = Math.round(2.55 * percent);
@@ -288,32 +299,11 @@ const SheetsExport = {
             script.onerror = reject;
             document.head.appendChild(script);
         });
-    },
-
-    showInstructions() {
-        const instructions = `
-📋 Google Sheets Import Instructions:
-
-1. Go to sheets.google.com
-2. Click "Blank" to create a new spreadsheet OR open an existing one
-3. Go to File → Import → Upload
-4. Select the downloaded .xlsx file
-5. Choose "Replace spreadsheet" or "Insert new sheet"
-6. Click "Import data"
-7. Your template is ready with all formulas and formatting preserved!
-
-💡 The .xlsx format imports perfectly into Google Sheets with all:
-   ✓ Colors and fonts preserved
-   ✓ Formulas working automatically
-   ✓ Cell borders and alignment intact
-        `;
-        
-        alert(instructions);
     }
 };
 
 // Global function for HTML onclick handlers
-async function exportToGoogleSheets() {
+async function exportToExcel() {
     const btn = event.target.closest('button');
     const originalText = btn.innerHTML;
 
@@ -322,7 +312,7 @@ async function exportToGoogleSheets() {
 
     try {
         const settings = Editor.getSettings();
-        await SheetsExport.export(settings);
+        await ExcelJSExport.export(settings);
 
         btn.classList.remove('loading');
         btn.innerHTML = '✅ Done!';
