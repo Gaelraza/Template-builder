@@ -131,6 +131,37 @@ const Editor = {
             incomeCategories: [...this.incomeCategories],
             expenseCategories: [...this.expenseCategories]
         };
+    },
+
+    applyTheme(themeName) {
+        const themes = {
+            warm: {
+                headerColor: '#d97706',
+                accentColor: '#ea580c',
+                fontFamily: 'Georgia, serif'
+            },
+            professional: {
+                headerColor: '#1e3a5f',
+                accentColor: '#475569',
+                fontFamily: 'Arial, sans-serif'
+            },
+            cute: {
+                headerColor: '#ec4899',
+                accentColor: '#a855f7',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        };
+
+        const theme = themes[themeName];
+        if (!theme) return;
+
+        document.getElementById('headerColor').value = theme.headerColor;
+        document.getElementById('accentColor').value = theme.accentColor;
+        document.getElementById('fontFamily').value = theme.fontFamily;
+
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
     }
 };
 
