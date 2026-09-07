@@ -78,6 +78,14 @@
                         <div class="collapse-title text-lg font-medium">🎨 Styling & UI</div>
                         <div class="collapse-content space-y-3">
                             <div class="form-control">
+                                <label class="label"><span class="label-text">Quick Themes</span></label>
+                                <div class="flex gap-2 flex-wrap">
+                                    <button class="btn btn-sm btn-outline" onclick="Editor.applyTheme('warm')">🔥 Warm & Cozy</button>
+                                    <button class="btn btn-sm btn-outline" onclick="Editor.applyTheme('professional')">💼 Sharp & Professional</button>
+                                    <button class="btn btn-sm btn-outline" onclick="Editor.applyTheme('cute')">🌈 Cute & Colourful</button>
+                                </div>
+                            </div>
+                            <div class="form-control">
                                 <label class="label"><span class="label-text">Header Color</span></label>
                                 <input type="color" id="headerColor" class="w-full h-10" value="#3b82f6" />
                             </div>
