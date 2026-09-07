@@ -115,15 +115,18 @@ const Editor = {
     },
 
     getSettings() {
+        const headerColorEl = document.getElementById('headerColor');
+        const accentColorEl = document.getElementById('accentColor');
+        
         return {
             templateName: document.getElementById('templateName').value || 'Budget Tracker',
             currencySymbol: document.getElementById('currencySymbol').value || '$',
             budgetPeriod: document.getElementById('budgetPeriod').value || 'monthly',
             startMonth: parseInt(document.getElementById('startMonth').value) || 0,
-            headerColor: document.getElementById('headerColor').value || '#3b82f6',
-            accentColor: document.getElementById('accentColor').value || '#10b981',
-            primaryColor: document.getElementById('headerColor').value || '#3b82f6',
-            secondaryColor: '#ef4444',
+            headerColor: headerColorEl.value || '#3b82f6',
+            accentColor: accentColorEl.value || '#10b981',
+            primaryColor: headerColorEl.dataset.primaryColor || headerColorEl.value || '#3b82f6',
+            secondaryColor: accentColorEl.dataset.secondaryColor || '#ef4444',
             fontFamily: document.getElementById('fontFamily').value || 'Arial, sans-serif',
             showGrid: document.getElementById('showGrid').checked !== false,
             conditionalFormatting: document.getElementById('conditionalFormatting').checked !== false,
@@ -138,16 +141,22 @@ const Editor = {
             warm: {
                 headerColor: '#d97706',
                 accentColor: '#ea580c',
+                primaryColor: '#d97706',
+                secondaryColor: '#f59e0b',
                 fontFamily: 'Georgia, serif'
             },
             professional: {
                 headerColor: '#1e3a5f',
                 accentColor: '#475569',
+                primaryColor: '#1e3a5f',
+                secondaryColor: '#64748b',
                 fontFamily: 'Arial, sans-serif'
             },
             cute: {
                 headerColor: '#ec4899',
                 accentColor: '#a855f7',
+                primaryColor: '#ec4899',
+                secondaryColor: '#f472b6',
                 fontFamily: 'Verdana, sans-serif'
             }
         };
@@ -158,6 +167,10 @@ const Editor = {
         document.getElementById('headerColor').value = theme.headerColor;
         document.getElementById('accentColor').value = theme.accentColor;
         document.getElementById('fontFamily').value = theme.fontFamily;
+
+        // Store primary and secondary colors in data attributes for getSettings to read
+        document.getElementById('headerColor').dataset.primaryColor = theme.primaryColor;
+        document.getElementById('accentColor').dataset.secondaryColor = theme.secondaryColor;
 
         if (typeof window.updatePreview === 'function') {
             window.updatePreview();
