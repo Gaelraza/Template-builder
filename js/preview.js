@@ -110,10 +110,13 @@ const Preview = {
                  </tr>`;
         
         incomeCategories.forEach(cat => {
+            const value = parseFloat(cat.value) || 0;
+            const textColor = window.Formatting ? window.Formatting.getValueColor(value) : '#1f2937';
+            
             html += `
                 <tr>
                     <td>${cat.name || cat}</td>
-                    <td><span class="input-cell">${currencySymbol}${(parseFloat(cat.value) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></td>
+                    <td><span class="input-cell" style="color: ${textColor}">${currencySymbol}${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></td>
                     <td><span class="input-cell">${currencySymbol}0.00</span></td>
                     <td class="text-right">${currencySymbol}0.00</td>
                 </tr>
@@ -122,9 +125,12 @@ const Preview = {
         
         // Income Total
         const totalIncome = incomeCategories.reduce((sum, cat) => sum + (parseFloat(cat.value) || 0), 0);
+        const incomeStyle = window.Formatting ? window.Formatting.getExcelStyle(totalIncome, 'total') : {};
+        const incomeColor = incomeStyle.font && incomeStyle.font.color && incomeStyle.font.color.rgb ? '#' + incomeStyle.font.color.rgb : '#1f2937';
+        
         html += `<tr class="total-row">
                     <td>Total Income</td>
-                    <td><strong>${currencySymbol}${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                    <td><strong style="color: ${incomeColor}">${currencySymbol}${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                     <td><strong>${currencySymbol}0.00</strong></td>
                     <td><strong>${currencySymbol}${totalIncome.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                  </tr>`;
@@ -135,10 +141,13 @@ const Preview = {
                  </tr>`;
         
         expenseCategories.forEach(cat => {
+            const value = parseFloat(cat.value) || 0;
+            const textColor = window.Formatting ? window.Formatting.getValueColor(value) : '#1f2937';
+            
             html += `
                 <tr>
                     <td>${cat.name || cat}</td>
-                    <td><span class="input-cell">${currencySymbol}${(parseFloat(cat.value) || 0).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></td>
+                    <td><span class="input-cell" style="color: ${textColor}">${currencySymbol}${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span></td>
                     <td><span class="input-cell">${currencySymbol}0.00</span></td>
                     <td class="text-right">${currencySymbol}0.00</td>
                 </tr>
@@ -147,19 +156,24 @@ const Preview = {
         
         // Expense Total
         const totalExpenses = expenseCategories.reduce((sum, cat) => sum + (parseFloat(cat.value) || 0), 0);
+        const expenseStyle = window.Formatting ? window.Formatting.getExcelStyle(totalExpenses, 'total') : {};
+        const expenseColor = expenseStyle.font && expenseStyle.font.color && expenseStyle.font.color.rgb ? '#' + expenseStyle.font.color.rgb : '#1f2937';
+        
         html += `<tr class="total-row">
                     <td>Total Expenses</td>
-                    <td><strong>${currencySymbol}${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                    <td><strong style="color: ${expenseColor}">${currencySymbol}${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                     <td><strong>${currencySymbol}0.00</strong></td>
                     <td><strong>${currencySymbol}${totalExpenses.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                  </tr>`;
         
         // Summary
         const netBalance = totalIncome - totalExpenses;
-        const balanceColor = netBalance >= 0 ? '#10b981' : '#ef4444';
-        html += `<tr class="total-row" style="background-color: ${settings.accentColor}20">
+        const balanceColor = window.Formatting ? window.Formatting.getValueColor(netBalance) : (netBalance >= 0 ? '#10b981' : '#ef4444');
+        const bgProgressColor = window.Formatting ? window.Formatting.getProgressColor(Math.max(0, (netBalance/totalIncome)*100)) : 'transparent';
+        
+        html += `<tr class="total-row" style="background-color: ${bgProgressColor}">
                     <td><strong>NET BALANCE</strong></td>
-                    <td colspan="3"><strong style="color: ${balanceColor}">${currencySymbol}${netBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
+                    <td colspan="3"><strong style="color: ${balanceColor}; font-size: 1.1em">${currencySymbol}${netBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong></td>
                  </tr>`;
         
         html += '</tbody></table>';
