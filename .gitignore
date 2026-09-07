@@ -1,1 +1,7 @@
-(js/formatting.js)
+(js/formatting.js has been added, and other js files have been modified, but these are source files - no build artifacts, dependencies, or temp files detected in the changes)
+
+(index.html is also a source file)
+
+(current .gitignore appears to be empty based on the format shown)
+
+(output nothing since only source files are present)
